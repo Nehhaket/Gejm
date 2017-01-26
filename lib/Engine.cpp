@@ -15,12 +15,12 @@ Engine::Engine() : _config(*new Config(_config_path)), _timer(*new Timer){
     }
 
   //SDL_TTF initialization and error handling
-    if (TTF_Init() == -1)
+    /*if (TTF_Init() == -1)
     {
         std::cout << "Init TTF  failt : " << SDL_GetError() << std::endl;
         logSDLError(std::cout, "SDL_Init");
         SDL_Quit();
-    }
+    }*/
 
   //Window creation
     _window = SDL_CreateWindow("Memory", 100, 100, _config.screen_width, _config.screen_height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
@@ -83,18 +83,20 @@ Engine::Engine() : _config(*new Config(_config_path)), _timer(*new Timer){
             SDL_Quit();
         }
     }
-    std::string temp = SDL_GetBasePath();
-    temp += "UbuntuMono-R.ttf";
-    _Font = TTF_OpenFont(temp.c_str(), 20);
-    if(_Font == NULL)
-    {
-        std::cout << TTF_GetError();
-    }
-    _White = {255, 255, 255};
+
+    /*
+     * std::string temp = SDL_GetBasePath();
+     * temp += "UbuntuMono-R.ttf";
+     * _Font = TTF_OpenFont(temp.c_str(), 20);
+     * if(_Font == NULL)
+     * {
+     *     std::cout << TTF_GetError();
+     * }
+     * _White = {255, 255, 255};
+     */
 
   //Misc
     _event.type = 0;
-    _in_menu = false;
     _close = false;
 
     setDifficultyLevels();
@@ -274,10 +276,12 @@ bool Engine::mainGame() {
         score.name = "";
         score.time = _timer.getTime();
         score.moves = _moves_count;
-        std::string temp = std::to_string(_moves_count);
-        _score_surface = TTF_RenderText_Solid(_Font, temp.c_str(), _White);
-        _score_texture = SDL_CreateTextureFromSurface(_renderer, _score_surface);
-        SDL_FreeSurface(_score_surface);
+        /*
+         * std::string temp = std::to_string(_moves_count);
+         * _score_surface = TTF_RenderText_Solid(_Font, temp.c_str(), _White);
+         * _score_texture = SDL_CreateTextureFromSurface(_renderer, _score_surface);
+         * SDL_FreeSurface(_score_surface);
+         */
         while(mainEndScreen());
         _config.addScore(score);
     }
@@ -295,12 +299,12 @@ bool Engine::mainMenu() {
                 _close = true;
             } break;
 
-            case SDL_KEYDOWN: {
+            /*case SDL_KEYDOWN: {
                 if (_event.key.keysym.sym == SDLK_ESCAPE)
                 {
                     _in_menu = false;
                 }
-            } break;
+            } break;*/
 
             case SDL_MOUSEBUTTONDOWN: {
                 int temp_id = checkIfMenuButtonClicked();
@@ -714,9 +718,8 @@ Engine::~Engine() {
     }
     cleanup(_background_texture, _renderer, _window, _score_texture, _tile_reverse_texture, _score_surface);
     IMG_Quit();
-    SDL_Quit();
-    TTF_CloseFont(_Font);
     TTF_Quit();
+    SDL_Quit();
     _config.saveSettings();
 }
 //
